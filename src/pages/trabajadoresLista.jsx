@@ -12,7 +12,7 @@ import {
   editarTrabajador,
   toggleActivoTrabajador,
   eliminarTrabajador
-} from '../services/trabajadoresService.js'
+} from '../services/trabajadoresservice.js'
 
 
 const TrabajadoresLista = () => {
