@@ -124,6 +124,8 @@ export const asignarAlmacenesUsuario = async ({ usuario_id, almacenes }) => {
         throw new Error(`Error en los datos enviados: ${errorData}`);
       } else if (response.status === 404) {
         throw new Error('El servicio de asignación no está disponible');
+      } else if (response.status === 409) {
+        throw new Error('Conflicto: Algunos almacenes ya están asignados a este usuario o a otro usuario. Verifica las asignaciones existentes.');
       } else {
         throw new Error(`Error del servidor (${response.status}): ${errorData}`);
       }

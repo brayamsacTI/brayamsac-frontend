@@ -74,6 +74,8 @@ const AsignarAlmacenesModal = ({
         // Redirigir al login si hay error 401
         localStorage.removeItem('token');
         window.location.href = '/loginSistema';
+      } else if (error.message.includes('Conflicto') || error.message.includes('409')) {
+        alert('⚠️ Conflicto de asignación: Algunos de los almacenes seleccionados ya están asignados. Por favor, verifica las asignaciones existentes y selecciona otros almacenes disponibles.');
       } else {
         alert(`❌ Error al asignar almacenes: ${error.message}`);
       }
