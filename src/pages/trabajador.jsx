@@ -1,6 +1,7 @@
 import { Edit, Trash2, Calendar, Clock, User, Building, MapPin } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { buildApiUrl } from '../config/security.js';
 
 import MainLayout from "@/components/layout/MainLayout";
 import { useUsuario } from "../hooks/useUsuario";
@@ -23,7 +24,7 @@ export default function Trabajador() {
     };
 
     // Obtener datos del trabajador
-    fetch(`http://localhost:3000/api/trabajadores/${id}`, { headers })
+    fetch(buildApiUrl(`/api/trabajadores/${id}`), { headers })
       .then((res) => res.json())
       .then((data) => {
         console.log("Trabajador:", data);
@@ -31,7 +32,7 @@ export default function Trabajador() {
       });
 
     // Obtener asistencias y resumen
-    fetch(`http://localhost:3000/api/trabajadorAsistencia/${id}`, { headers })
+    fetch(buildApiUrl(`/api/trabajadorAsistencia/${id}`), { headers })
       .then((res) => res.json())
       .then((data) => {
         console.log("Datos recibidos:", data);
@@ -68,7 +69,7 @@ export default function Trabajador() {
     
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`http://localhost:3000/api/asistencias/${editando.id}`, {
+      const response = await fetch(buildApiUrl(`/api/asistencias/${editando.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +128,7 @@ export default function Trabajador() {
         alert('Asistencia eliminada correctamente');
         
         // Actualizar el resumen
-        fetch(`http://localhost:3000/api/trabajadorAsistencia/${id}`, {
+        fetch(buildApiUrl(`/api/trabajadorAsistencia/${id}`), {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,

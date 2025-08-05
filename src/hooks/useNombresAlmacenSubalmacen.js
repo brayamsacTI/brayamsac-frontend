@@ -1,5 +1,6 @@
 // src/hooks/useNombresAlmacenSubalmacen.js
 import { useEffect, useState } from "react";
+import { buildApiUrl } from '../config/security.js';
 
 export function useNombresAlmacenSubalmacen(subalmacenId) {
   const [usuario, setUsuario] = useState(null);
@@ -9,7 +10,7 @@ export function useNombresAlmacenSubalmacen(subalmacenId) {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
-    fetch("http://localhost:3000/api/auth/validar", {
+    fetch(buildApiUrl("/api/auth/validar"), {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -23,7 +24,7 @@ export function useNombresAlmacenSubalmacen(subalmacenId) {
     const fetchNombres = async () => {
       try {
         const resSub = await fetch(
-          `http://localhost:3000/api/subalmacenes/${subalmacenId}`,
+          buildApiUrl(`/api/subalmacenes/${subalmacenId}`),
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -33,7 +34,7 @@ export function useNombresAlmacenSubalmacen(subalmacenId) {
         setSubalmacenNombre(sub.nombre || "");
         if (sub.almacen_id) {
           const resAlm = await fetch(
-            `http://localhost:3000/api/almacenes/${sub.almacen_id}`,
+            buildApiUrl(`/api/almacenes/${sub.almacen_id}`),
             {
               headers: { Authorization: `Bearer ${token}` },
             }

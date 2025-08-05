@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { buildApiUrl } from '../config/security.js';
 
 export const useTokenExpiration = () => {
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ export const useTokenExpiration = () => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        await fetch("http://localhost:3000/api/auth/logout", {
+        await fetch(buildApiUrl("/api/auth/logout"), {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -36,7 +37,7 @@ export const useTokenExpiration = () => {
       }
 
       try {
-        const response = await fetch("http://localhost:3000/api/auth/validar", {
+        const response = await fetch(buildApiUrl("/api/auth/validar"), {
           headers: {
             "Authorization": `Bearer ${token}`
           }

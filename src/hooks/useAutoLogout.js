@@ -1,5 +1,6 @@
 // Hook para manejar sesión persistente (sin logout automático al cerrar pestaña)
 import { useEffect } from 'react';
+import { buildApiUrl } from '../config/security.js';
 
 export const useAutoLogout = () => {
   useEffect(() => {
@@ -8,7 +9,7 @@ export const useAutoLogout = () => {
       if (!token) return;
       
       try {
-        await fetch("http://localhost:3000/api/auth/logout", {
+        await fetch(buildApiUrl("/api/auth/logout"), {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -46,7 +47,7 @@ export const useAutoLogout = () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        await fetch("http://localhost:3000/api/auth/logout", {
+        await fetch(buildApiUrl("/api/auth/logout"), {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,

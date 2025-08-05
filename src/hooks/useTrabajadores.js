@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { buildApiUrl } from '../config/security.js';
 
 export function useTrabajadores() {
   const [trabajadores, setTrabajadores] = useState([]);
@@ -12,12 +13,12 @@ export function useTrabajadores() {
       try {
         const token = localStorage.getItem('token');
         // Trabajadores
-        const resTrab = await fetch('http://localhost:3000/api/trabajadores', {
+        const resTrab = await fetch(buildApiUrl('/api/trabajadores'), {
           headers: { Authorization: `Bearer ${token}` }
         });
         setTrabajadores(await resTrab.json());
         // Coordinadores
-        const resCoord = await fetch('http://localhost:3000/api/usuarios', {
+        const resCoord = await fetch(buildApiUrl('/api/usuarios'), {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (resCoord.ok) {
@@ -25,12 +26,12 @@ export function useTrabajadores() {
           setCoordinadores(dataCoord.filter(u => u.rol_id === 3));
         }
         // Almacenes
-        const resAlm = await fetch('http://localhost:3000/api/almacenes', {
+        const resAlm = await fetch(buildApiUrl('/api/almacenes'), {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (resAlm.ok) setAlmacenes(await resAlm.json());
         // Subalmacenes
-        const resSub = await fetch('http://localhost:3000/api/subalmacenes', {
+        const resSub = await fetch(buildApiUrl('/api/subalmacenes'), {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (resSub.ok) setSubalmacenes(await resSub.json());

@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 
 import useCoordinadores from '../hooks/useCoordinadores';
 import { fetchAlmacenes, fetchSubalmacenes, asignarAlmacenesUsuario } from '../services/coordinadoresService.js';
+import { buildApiUrl } from '../config/security.js';
 
 export default function useCoordinadoresPage() {
   const {
@@ -43,7 +44,7 @@ export default function useCoordinadoresPage() {
       
       // Siempre recargar usuarioAlmacenes ya que puede cambiar
       promises.push(
-        fetch('http://localhost:3000/api/usuario-almacenes', {
+        fetch(buildApiUrl('/api/usuario-almacenes'), {
           headers: { Authorization: `Bearer ${token}` },
         })
       );
@@ -93,7 +94,7 @@ export default function useCoordinadoresPage() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const usuarioRes = await fetch('http://localhost:3000/api/usuarios', {
+      const usuarioRes = await fetch(buildApiUrl('/api/usuarios'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +158,7 @@ export default function useCoordinadoresPage() {
       
       // Manejo específico de errores
       if (err.message.includes('Failed to fetch') || err.name === 'TypeError') {
-        alert('❌ Error de conexión: No se pudo conectar con el servidor. Verifica que el backend esté funcionando en http://localhost:3000');
+        alert('❌ Error de conexión: No se pudo conectar con el servidor. Verifica que el backend esté funcionando.');
       } else if (err.message.includes('404')) {
         alert('❌ Error: El servicio de asignación de almacenes no está disponible.');
       } else if (err.message.includes('401')) {
@@ -190,7 +191,7 @@ export default function useCoordinadoresPage() {
     
     try {
       // 1. Eliminar asignaciones de almacenes (solo si existen)
-      const resUA = await fetch(`http://localhost:3000/api/usuario-almacenes/usuario/${confirmDeleteId}`, {
+      const resUA = await fetch(buildApiUrl(`/api/usuario-almacenes/usuario/${confirmDeleteId}`), {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

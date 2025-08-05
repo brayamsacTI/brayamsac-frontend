@@ -6,6 +6,7 @@ import {
   Warehouse
 } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { buildApiUrl } from '../../config/security.js';
 
 import logo from "../../assets/img/dashboard.png";
 
@@ -19,7 +20,7 @@ export default function Sidebar() {
       const token = localStorage.getItem("token");
       if (token) {
         // Llamar al endpoint de logout del backend
-        await fetch("http://localhost:3000/api/auth/logout", {
+        await fetch(buildApiUrl("/api/auth/logout"), {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,

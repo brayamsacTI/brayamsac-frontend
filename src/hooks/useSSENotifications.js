@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { buildApiUrl } from '../config/security.js';
 
 export function useSSENotifications(onAsistenciaChange) {
   const eventSourceRef = useRef(null);
@@ -8,7 +9,7 @@ export function useSSENotifications(onAsistenciaChange) {
     if (!token) return;
 
     // Crear conexión SSE
-    const eventSource = new EventSource(`http://localhost:3000/api/notifications/events?token=${token}`);
+    const eventSource = new EventSource(buildApiUrl(`/api/notifications/events?token=${token}`));
     eventSourceRef.current = eventSource;
 
     eventSource.onopen = () => {

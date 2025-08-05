@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-
-const API_URL = "http://localhost:3000/api/usuarios";
+import { buildApiUrl } from '../config/security.js';
 
 const useCoordinadores = () => {
   const [coordinadores, setCoordinadores] = useState([]);
@@ -13,7 +12,7 @@ const useCoordinadores = () => {
       setError(null);
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:3000/api/usuarios?rol_id=3", {
+        const res = await fetch(buildApiUrl("/api/usuarios?rol_id=3"), {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -44,7 +43,7 @@ const useCoordinadores = () => {
     setError(null);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:3000/api/usuarios?rol_id=3", {
+      const res = await fetch(buildApiUrl("/api/usuarios?rol_id=3"), {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -64,7 +63,7 @@ const useCoordinadores = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(API_URL, {
+      const res = await fetch(buildApiUrl("/api/usuarios"), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -85,7 +84,7 @@ const useCoordinadores = () => {
   const handleUpdateCoordinador = async (id, updatedData) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API_URL}/${id}`, {
+      const res = await fetch(buildApiUrl(`/api/usuarios/${id}`), {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -113,7 +112,7 @@ const useCoordinadores = () => {
   const handleDeleteCoordinador = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API_URL}/${id}`, {
+      const res = await fetch(buildApiUrl(`/api/usuarios/${id}`), {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

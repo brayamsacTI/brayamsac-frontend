@@ -40,7 +40,7 @@ export default function Dashboard() {
       }
 
       try {
-        const res = await fetch("http://localhost:3000/api/auth/validar", {
+        const res = await fetch(buildApiUrl("/api/auth/validar"), {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ export default function Dashboard() {
         setError(null);
         const token = localStorage.getItem("token");
         try {
-          const res = await fetch("http://localhost:3000/api/dashboard/resumen", {
+          const res = await fetch(buildApiUrl("/api/dashboard/resumen"), {
             headers: {
               Authorization: `Bearer ${token}`,
             },

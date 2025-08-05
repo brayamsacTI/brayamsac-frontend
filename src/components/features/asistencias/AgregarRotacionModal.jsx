@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { buildApiUrl } from '../../../config/security.js';
 
 export default function AgregarRotacionModal({ open, onClose, subalmacenActualId, onAgregar, asistenciasActuales = [], fechaActual }) {
   const [trabajadores, setTrabajadores] = useState([]);
@@ -14,7 +15,7 @@ export default function AgregarRotacionModal({ open, onClose, subalmacenActualId
     setSearch("");
     setSelected([]);
     const token = localStorage.getItem('token');
-    fetch("http://localhost:3000/api/trabajadores", {
+    fetch(buildApiUrl("/api/trabajadores"), {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(async res => {

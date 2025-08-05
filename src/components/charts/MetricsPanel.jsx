@@ -11,6 +11,7 @@ import {
   BarElement,
   Filler,
 } from 'chart.js';
+import { buildApiUrl } from '../../config/security.js';
 import { Line, Bar } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -38,7 +39,7 @@ export default function MetricsPanel() {
       setError(null);
       const token = localStorage.getItem("token");
       try {
-        const res = await fetch("http://localhost:3000/api/dashboard/horas-faltantes", {
+        const res = await fetch(buildApiUrl("/api/dashboard/horas-faltantes"), {
           headers: { Authorization: `Bearer ${token}` },
           signal: controller.signal,
         });

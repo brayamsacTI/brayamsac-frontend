@@ -1,5 +1,6 @@
 // src/hooks/useFechasPorSubalmacen.js
 import { useState, useEffect } from "react";
+import { buildApiUrl } from '../config/security.js';
 
 export function useFechasPorSubalmacen(subalmacenId) {
   const [fechas, setFechas] = useState([]);
@@ -18,7 +19,7 @@ export function useFechasPorSubalmacen(subalmacenId) {
   useEffect(() => {
     if (!subalmacenId) return;
     setLoading(true);
-    fetch(`http://localhost:3000/api/fechas?subalmacen_id=${subalmacenId}`)
+    fetch(buildApiUrl(`/api/fechas?subalmacen_id=${subalmacenId}`))
       .then((res) => res.json())
       .then((data) => {
         console.log("[Fechas] Fechas obtenidas:", data); // INFO
@@ -53,7 +54,7 @@ export function useFechasPorSubalmacen(subalmacenId) {
         return;
       }
       
-      const res = await fetch(`http://localhost:3000/api/fechas/${id}`, {
+      const res = await fetch(buildApiUrl(`/api/fechas/${id}`), {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",
@@ -102,7 +103,7 @@ export function useFechasPorSubalmacen(subalmacenId) {
     if (!fechaAEliminar) return;
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:3000/api/fechas/${fechaAEliminar.id}`, {
+      const res = await fetch(buildApiUrl(`/api/fechas/${fechaAEliminar.id}`), {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`
@@ -148,7 +149,7 @@ export function useFechasPorSubalmacen(subalmacenId) {
       
       // Si hay múltiples fechas, usar el endpoint optimizado
       if (fechasAgregar.length > 1) {
-        const res = await fetch("http://localhost:3000/api/fechas/batch", {
+        const res = await fetch(buildApiUrl("/api/fechas/batch"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -181,7 +182,7 @@ export function useFechasPorSubalmacen(subalmacenId) {
       } else {
         // Para una sola fecha, usar el endpoint individual
         const fecha = fechasAgregar[0];
-        const res = await fetch("http://localhost:3000/api/fechas", {
+        const res = await fetch(buildApiUrl("/api/fechas"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

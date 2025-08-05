@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { buildApiUrl } from '../config/security.js';
 
 
 export function useUsuario(subalmacenId, fecha) {
@@ -11,7 +12,7 @@ export function useUsuario(subalmacenId, fecha) {
       console.log("[Asistencias] No hay token, usuario no autenticado");
       return;
     }
-    fetch("http://localhost:3000/api/auth/validar", {
+    fetch(buildApiUrl("/api/auth/validar"), {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())

@@ -1,5 +1,6 @@
 import { UserPlus, Search } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
+import { buildApiUrl } from '../config/security.js';
 
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import AsignarAlmacenesModal from '@/components/features/coordinadores/AsignarAlmacenesModal';
@@ -168,7 +169,7 @@ export default function Coordinadores() {
                 await handleUpdateCoordinador(data.id, data);
                 if (data.almacenId && data.subalmacenIds && data.subalmacenIds.length > 0) {
                   // Eliminar todas las asignaciones actuales antes de asignar las nuevas
-                  await fetch(`http://localhost:3000/api/usuario-almacenes/usuario/${data.id}`, {
+                  await fetch(buildApiUrl(`/api/usuario-almacenes/usuario/${data.id}`), {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
                   });
@@ -178,7 +179,7 @@ export default function Coordinadores() {
                   }));
                   await props.handleAsignarAlmacenes({ usuario_id: data.id, almacenes });
                 }
-                const res = await fetch('http://localhost:3000/api/usuario-almacenes', {
+                const res = await fetch(buildApiUrl('/api/usuario-almacenes'), {
                   headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
                 if (res.ok && typeof props.setUsuarioAlmacenes === 'function') {
