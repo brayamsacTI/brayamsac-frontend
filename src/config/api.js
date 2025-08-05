@@ -3,7 +3,7 @@
  */
 
 // Configuración centralizada de la API
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://brayamsac-backend.onrender.com';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://brayamsac-backend-7ah1.onrender.com';
 
 // Configuración de timeouts
 export const API_TIMEOUT = 10000; // 10 segundos
