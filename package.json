@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "rm -rf dist && rm -rf node_modules/.vite && vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
