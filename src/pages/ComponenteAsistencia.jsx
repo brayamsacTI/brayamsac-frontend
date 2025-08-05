@@ -9,7 +9,7 @@ import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
 import { tokenManager, logger } from "../config/security.js";
 import { useAsistencias } from "../hooks/useAsistencias";
-import { useUsuario } from "../hooks/useUsuario";
+import { useUser } from "../hooks/useAuthUser";
 import { eliminarAsistencia } from "../services/asistencia.service.js";
 import { crearRotacionTrabajador } from "../services/rotacion.service.js";
 
@@ -21,7 +21,7 @@ export default function ComponenteAsistencia() {
   const { subalmacenId, fecha } = useParams();
   const navigate = useNavigate();
 
-  const usuario = useUsuario(subalmacenId, fecha);
+  const usuario = useUser();
   const { asistencias, loading, almacenNombre, subalmacenNombre, refetchAsistencias } = useAsistencias(subalmacenId, fecha, navigate);
 
   const nombreAlmacen = almacenNombre || (asistencias[0]?.almacen_nombre ?? "");

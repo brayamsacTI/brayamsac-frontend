@@ -4,12 +4,12 @@ import { useParams } from "react-router-dom";
 import { buildApiUrl } from '../config/security.js';
 
 import MainLayout from "@/components/layout/MainLayout";
-import { useUsuario } from "../hooks/useUsuario";
+import { useUser } from "../hooks/useAuthUser";
 import { eliminarAsistencia } from "../services/asistencia.service.js";
 
 export default function Trabajador() {
   const { id } = useParams();
-  const usuario = useUsuario();
+  const usuario = useUser();
   const [trabajador, setTrabajador] = useState(null);
   const [resumen, setResumen] = useState(null);
   const [asistencias, setAsistencias] = useState([]);

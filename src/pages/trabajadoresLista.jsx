@@ -6,7 +6,7 @@ import { ConfirmModal, Toast } from '@/components/ui'
 import { MainLayout } from '@/components/layout'
 import { TrabajadoresTableContainer, TrabajadorModal } from '@/components/features/trabajadores'
 import { useTrabajadores } from '../hooks/useTrabajadores'
-import { useUsuario } from '../hooks/useUsuario'
+import { useUser } from '../hooks/useAuthUser'
 import {
   crearTrabajador,
   editarTrabajador,
@@ -30,7 +30,7 @@ const TrabajadoresLista = () => {
   const [searchNombre, setSearchNombre] = useState("");
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const navigate = useNavigate()
-  const usuario = useUsuario()
+  const usuario = useUser()
 
   // Filtrar trabajadores por nombre
   const trabajadoresFiltrados = useMemo(() => {
