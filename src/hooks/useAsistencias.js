@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 
 import { buildApiUrl, tokenManager, logger } from '../config/security.js';
+import { rateLimitedFetch } from '../utils/rateLimiter.js';
 
 // Cache simple en memoria para evitar consultas repetidas
 const cache = new Map();
@@ -16,7 +17,7 @@ export function useAsistencias(subalmacenId, fecha, navigate) {
   useEffect(() => {
     if (!subalmacenId) return;
     const token = tokenManager.get();
-    fetch(buildApiUrl(`/api/subalmacenes/${subalmacenId}`), {
+    rateLimitedFetch(buildApiUrl(`/api/subalmacenes/${subalmacenId}`), {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -86,7 +87,7 @@ export function useAsistencias(subalmacenId, fecha, navigate) {
     
     logger.log("[useAsistencias] URL construida:", url);
     
-    fetch(url, {
+    rateLimitedFetch(url, {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",

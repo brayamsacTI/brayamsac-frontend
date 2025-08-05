@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '../config/api.js';
+import { rateLimitedFetch } from '../utils/rateLimiter.js';
 
 // Cache simple para evitar peticiones duplicadas
 const updateCache = new Map();
@@ -27,7 +28,7 @@ export const asistenciaService = {
         try {
           const token = localStorage.getItem('token');
           
-          const response = await fetch(`${API_BASE_URL}/api/asistencias/${id}`, {
+          const response = await rateLimitedFetch(`${API_BASE_URL}/api/asistencias/${id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -62,7 +63,7 @@ export const asistenciaService = {
   async obtenerAsistencia(id) {
     const token = localStorage.getItem('token');
     
-    const response = await fetch(`${API_BASE_URL}/api/asistencias/${id}`, {
+    const response = await rateLimitedFetch(`${API_BASE_URL}/api/asistencias/${id}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`
