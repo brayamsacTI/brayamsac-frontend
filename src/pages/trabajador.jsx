@@ -309,7 +309,7 @@ export default function Trabajador() {
                         <tr key={asis.id || idx} className="hover:bg-gray-50 transition-colors">
                           <td className="px-2 py-2 text-gray-900 font-medium">
                             {asis.fecha
-                              ? new Date(asis.fecha).toLocaleDateString("es-PE")
+                              ? new Date(asis.fecha).toLocaleDateString("es-ES", { timeZone: "UTC" })
                               : "-"}
                           </td>
                           <td className="px-2 py-2 text-gray-600 font-mono">{asis.dni || "-"}</td>

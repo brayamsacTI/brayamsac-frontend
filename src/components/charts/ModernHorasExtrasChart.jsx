@@ -6,7 +6,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import { buildApiUrl } from '../../config/security.js';
+import { buildApiUrl } from '../../config/api.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

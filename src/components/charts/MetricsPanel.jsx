@@ -11,7 +11,7 @@ import {
   BarElement,
   Filler,
 } from 'chart.js';
-import { buildApiUrl } from '../../config/security.js';
+import { buildApiUrl } from '../../config/api.js';
 import { Line, Bar } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -39,17 +39,57 @@ export default function MetricsPanel() {
       setError(null);
       const token = localStorage.getItem("token");
       try {
-        const res = await fetch(buildApiUrl("/api/dashboard/horas-faltantes"), {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await fetch(buildApiUrl("/api/dashboard/horas-faltantes"), {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
           signal: controller.signal,
         });
-        if (!res.ok) throw new Error("Error al obtener trabajadores que deben horas");
-        const result = await res.json();
-        if (!ignore) setData(result);
+        
+        if (!response.ok) {
+          if (response.status === 401) {
+            throw new Error('No autorizado - Token inválido');
+          } else if (response.status === 404) {
+            throw new Error('Endpoint no encontrado');
+          } else if (response.status >= 500) {
+            throw new Error('Error del servidor');
+          }
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Datos de horas faltantes recibidos:', result);
+        
+        // Manejar nueva estructura de respuesta del backend
+        const horasFaltantesData = result.data || result;
+        if (!ignore) setData(horasFaltantesData);
+        
+        // Mostrar mensaje si se usó fallback
+        if (result.fallback || response.headers.get('X-Fallback-Used')) {
+          setError('Datos obtenidos con método alternativo - Algunos datos pueden estar limitados');
+        }
       } catch (err) {
         if (!ignore) {
           setData([]);
-          setError("No se pudo cargar la información.");
+          console.error('Error en horas faltantes:', err);
+          
+          // Manejo específico de diferentes tipos de errores
+          if (err.name === 'AbortError') {
+            setError("Solicitud cancelada.");
+          } else if (err.message.includes('ERR_ABORTED')) {
+            setError("Error de conexión: ERR_ABORTED. Verifique la conexión al servidor.");
+          } else if (err.message.includes('fetch')) {
+            setError("Error de red: No se pudo conectar al servidor.");
+          } else if (err.message.includes('401')) {
+            setError("Error de autenticación: Token inválido o expirado.");
+          } else if (err.message.includes('404')) {
+            setError("Endpoint no encontrado: /api/dashboard/horas-faltantes");
+          } else if (err.message.includes('500')) {
+            setError("Error interno del servidor.");
+          } else {
+            setError(`Error: ${err.message || 'No se pudo cargar la información de horas faltantes.'}`);
+          }
         }
       } finally {
         if (!ignore) setLoading(false);
@@ -114,6 +154,114 @@ export default function MetricsPanel() {
   const totalHorasAsignadas = data.reduce((sum, t) => sum + (parseFloat(t.horas_asignadas) || 0), 0);
   const totalHorasTrabajadas = data.reduce((sum, t) => sum + (parseFloat(t.horas_trabajadas) || 0), 0);
   const eficienciaPromedio = totalHorasAsignadas > 0 ? (totalHorasTrabajadas / totalHorasAsignadas) * 100 : 0;
+
+  // Función para reintentar la carga
+  const handleRetry = () => {
+    setError(null);
+    setLoading(true);
+    const controller = new AbortController();
+    const fetchHorasFaltantes = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(buildApiUrl("/api/dashboard/horas-faltantes"), {
+          headers: { Authorization: `Bearer ${token}` },
+          signal: controller.signal,
+        });
+        
+        if (!res.ok) {
+          if (res.status === 401) {
+            throw new Error(`Error 401: Token de autenticación inválido o expirado`);
+          } else if (res.status === 404) {
+            throw new Error(`Error 404: Endpoint no encontrado`);
+          } else if (res.status === 500) {
+            throw new Error(`Error 500: Error interno del servidor`);
+          } else {
+            throw new Error(`Error ${res.status}: ${res.statusText}`);
+          }
+        }
+        const result = await res.json();
+        setData(result);
+      } catch (err) {
+        setData([]);
+        console.error('Error en horas faltantes:', err);
+        
+        // Implementar fallback con datos mock
+        const mockData = [
+          {
+            id: 1,
+            nombre: "Juan Pérez",
+            horas_asignadas: "8",
+            horas_trabajadas: "6.5",
+            fecha: new Date().toISOString().split('T')[0]
+          },
+          {
+            id: 2,
+            nombre: "María García",
+            horas_asignadas: "8",
+            horas_trabajadas: "7.2",
+            fecha: new Date().toISOString().split('T')[0]
+          },
+          {
+            id: 3,
+            nombre: "Carlos López",
+            horas_asignadas: "8",
+            horas_trabajadas: "5.8",
+            fecha: new Date().toISOString().split('T')[0]
+          }
+        ];
+        
+        if (err.name === 'AbortError') {
+          setError("Solicitud cancelada.");
+        } else if (err.message.includes('ERR_ABORTED') || err.message.includes('fetch')) {
+          console.warn('Backend no disponible, usando datos de demostración');
+          setData(mockData);
+          setError("⚠️ Mostrando datos de demostración - Backend no disponible");
+        } else {
+          console.warn('Error del servidor, usando datos de demostración');
+          setData(mockData);
+          setError(`⚠️ ${err.message} - Mostrando datos de demostración`);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHorasFaltantes();
+  };
+
+  // Mostrar error si existe
+  if (error) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-red-200">
+          <div className="text-center">
+            <div className="text-red-500 mb-2">
+              <svg className="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Error en Horas Faltantes</h3>
+            <p className="text-sm text-red-600 mb-4">{error}</p>
+            <button 
+              onClick={handleRetry}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
+            >
+              Reintentar
+            </button>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="text-center text-gray-500">
+            <p>Datos no disponibles</p>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="text-center text-gray-500">
+            <p>Datos no disponibles</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { buildApiUrl } from '../../config/security.js';
+import { buildApiUrl } from '../../config/api.js';
 
 export default function TrabajadoresSemanaStats() {
   const [trabajadores, setTrabajadores] = useState([]);
